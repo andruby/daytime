@@ -1,1 +1,79 @@
-<h1>Daytime</h1>
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Nightime, Daytime</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="apple-touch-icon" href="apple-touch-icon.png"> -->
+    <!-- <link rel="stylesheet" href="css/normalize.min.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/suncalc@1.8.0"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h2>Sunclock</h2>
+      <div>
+        <label>
+          Lat:
+          <input v-model="lat">
+        </label>
+        <label>
+          Lon:
+          <input v-model="lon">
+        </label>
+      </div>
+      <div>
+        Time: <span>{{ timeDisplay }}</span>
+        Sunrise: <span>{{ sunrise }}</span>
+        Sunset: <span>{{ sunset }}</span>
+      </div>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          lat: 51,
+          lon: 4,
+          currentTime: new Date(),
+          polling: null,
+        },
+        methods: {
+          updateTime: function(){
+            this.currentTime = new Date()
+          },
+        },
+        computed: {
+          timeDisplay: function() {
+            return this.currentTime.getHours() + ':' + this.currentTime.getMinutes() + ':' + this.currentTime.getSeconds()
+          },
+          // TODO: determine if we are in phase 1 < sunrise < 2 < sunset < 3
+          sunrise: function() {
+            return this.sunTimes.sunrise.getHours() + ':' + this.sunTimes.sunrise.getMinutes() + ':' + this.sunTimes.sunrise.getSeconds()
+          },
+
+          sunset: function() {
+            return this.sunTimes.sunset.getHours() + ':' + this.sunTimes.sunset.getMinutes() + ':' + this.sunTimes.sunset.getSeconds()
+          },
+
+          sunTimes: function() {
+            return SunCalc.getTimes(this.currentTime, this.lat, this.lon)
+          }
+        },
+        mounted: function() {
+          this.polling = setInterval(() => { this.updateTime() }, 1000)
+        }
+      })
+    </script>
+
+    <!-- <a href="http://www.freecraigslistcounter.com" target="_blank" title="Free Craigslist Hit Counter">
+      <img src="http://www.freecraigslistcounter.com/counter.php?code=1577197430z143474" border="0" alt="Free Craigslist Hit Counter">
+    </a> -->
+
+    <a href='https://www.stat-counter.org/'>StatCounter</a>
+    <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=925594bde127e3a16f09e9dd206228c0a721bfae'></script>
+    <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/618787/t/0"></script>
+  </body>
+</html>
